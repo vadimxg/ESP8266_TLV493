@@ -164,7 +164,7 @@ void loop()
     char const *WS = WStext.c_str();
     if (WStext != WStext_old) {
       if (!webSocket.sendTXT(num, WS)) {
-        Serial.print(":");
+        //Serial.print(":"); // For debug of lost web socket connetion
       }
     }
     x = 0;
