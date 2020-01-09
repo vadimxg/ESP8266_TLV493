@@ -1,0 +1,57 @@
+const char MAIN_page[] PROGMEM = R"=====(
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<title>Hand wheel</title>
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+.wrapper {
+	height:1000px;
+}
+.container {
+  position: relative;
+  text-align: center;
+  color: black;
+}
+.AngleText {
+  color: black;
+  font-size: 2vw; 
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+<script type="text/javascript" src="./jQueryRotate.js"></script>
+<div class="container">
+	<img class="image" src="https://upload.wikimedia.org/wikipedia/en/0/09/Circle_Logo.svg">
+	<div class="AngleText">0.00</div>
+</div>
+<script>
+	var connection = new WebSocket('ws://'+ window.location.hostname +':81/', ['arduino']);
+		connection.onopen = function () {
+		connection.send('Connect ' + new Date());
+		console.log('WebSocket connected');
+	};
+	connection.onerror = function (error) {
+	console.log('WebSocket Error ', error);
+	};
+	connection.onmessage = function (e) {
+	var ang = parseFloat(e.data);
+	$(".image").rotate(ang);
+	$(".AngleText").html(e.data);
+	};
+	connection.onclose = function () {
+	console.log('WebSocket connection closed');
+};
+</script>
+</div>
+</body>
+</html>
+)=====";
