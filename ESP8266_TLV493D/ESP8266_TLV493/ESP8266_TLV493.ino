@@ -11,8 +11,8 @@
 
 TLV493D sensor1;
 
-const int sensor1_pwr_pin = 13;
-const int i2c_sda = 4;
+const int sensor1_pwr_pin = 13; //GPIO13 for sensor power up
+const int i2c_sda = 4; //GPIO4
 const char* ssid = "your_ssid";
 const char* password = "your_password";
 const char* host = "your_host_name";
@@ -57,7 +57,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         IPAddress ip = webSocket.remoteIP(num);
         Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
 
-
         // send message to client
 
         webSocket.sendTXT(num, "Connected");
@@ -68,8 +67,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
       // send message to client
 
       // webSocket.sendTXT(num, "message here");
-
-
 
       // send data to all connected clients
 
@@ -117,7 +114,7 @@ void setup()
   delay(500);
 
   //init sensor1
-  digitalWrite(sensor1_pwr_pin, LOW);
+  digitalWrite(sensor1_pwr_pin, LOW); // Sensor switch on
   digitalWrite(i2c_sda, LOW); //0x1F
   Serial.println("Starting sensor 1");
   delay(500);
@@ -127,16 +124,16 @@ void setup()
   //initialize sensor 1
   Serial.print("Initializing sensor 1: 0x");
   Serial.println(sensor1.init(LOW), HEX);
-  server.on("/inline", handleRoot);
+  server.on("/inline", handleRoot); // To get just angle data from sensor
 
   server.on("/", []() {
     server.send(200, "text/html", MAIN_page);
   });
 
-  server.on("/jQueryRotate.js", []() {
+  server.on("/jQueryRotate.js", []() { // Java script for rotate image
     server.send(200, "application/javascript", jQueryRotate);
   });
-  server.on("/Circle_Logo.svg", []() {
+  server.on("/Circle_Logo.svg", []() { //Demo image
     server.send(200, "image/svg+xml", Circle_Logo);
   });
   server.onNotFound(handleNotFound);
